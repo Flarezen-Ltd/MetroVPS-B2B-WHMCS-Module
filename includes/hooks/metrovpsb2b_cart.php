@@ -550,10 +550,11 @@ function metrovpsb2bOverviewWidget(int $serviceId): string
     $pkgTitle = is_array($vpsData['package'] ?? null) ? ($vpsData['package']['title'] ?? '') : '';
     $modalId      = 'metrovps-modal-overview-' . $serviceId;
     $isSuspended  = ($record->status ?? '') === 'suspended';
+    $isTerminated = ($record->status ?? '') === 'terminated';
 
     $facts = '';
 
-    if ($ip !== '') {
+    if (!$isTerminated && $ip !== '') {
         $facts .= '<div class="metrovps-fact"><span class="metrovps-fact-label">IPv4</span>'
             . '<span class="metrovps-chip"><span class="metrovps-chip-value">' . metrovpsb2bWidgetEsc($ip) . '</span>'
             . '<button type="button" class="metrovps-copy" data-metrovps-copy data-copy-value="' . metrovpsb2bWidgetEsc($ip) . '" title="Copy"><i class="far fa-copy"></i></button>'
@@ -584,7 +585,7 @@ function metrovpsb2bOverviewWidget(int $serviceId): string
         . '</div>'
         . '<div class="metrovps-overview-badges">'
         . metrovpsb2bWidgetBadge($record->status ?? null)
-        . ($isSuspended ? '' : ' ' . metrovpsb2bWidgetPowerBadge($vpsData))
+        . (($isSuspended || $isTerminated) ? '' : ' ' . metrovpsb2bWidgetPowerBadge($vpsData))
         . '</div>'
         . '</div>';
 
@@ -595,6 +596,15 @@ function metrovpsb2bOverviewWidget(int $serviceId): string
     if ($isSuspended) {
         $html .= '<div class="metrovps-actionbar">'
             . '<span class="metrovps-suspended-note"><i class="fas fa-pause-circle"></i> Service suspended — actions are unavailable until this service is unsuspended.</span>'
+            . '</div>';
+        $html .= '</div>';
+
+        return $html;
+    }
+
+    if ($isTerminated) {
+        $html .= '<div class="metrovps-actionbar">'
+            . '<span class="metrovps-suspended-note"><i class="fas fa-ban"></i> Service terminated — no further actions are available.</span>'
             . '</div>';
         $html .= '</div>';
 

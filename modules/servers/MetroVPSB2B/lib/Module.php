@@ -796,6 +796,10 @@ class Module
             return 'This VPS is suspended. Actions are unavailable until it is unsuspended.';
         }
 
+        if (($record->status ?? '') === 'terminated') {
+            return 'This VPS has been terminated. No further actions are available.';
+        }
+
         // Cooldown: one power action per 60 seconds per VPS; nothing while a
         // reinstall is in progress.
         $lockRemaining = $this->powerLockRemaining($record->power_action_at ?? null);
@@ -1183,6 +1187,10 @@ class Module
             return 'This VPS is suspended. Actions are unavailable until it is unsuspended.';
         }
 
+        if (($record->status ?? '') === 'terminated') {
+            return 'This VPS has been terminated. No further actions are available.';
+        }
+
         $rebuildLockRemaining = $this->rebuildLockRemaining($record->locked_until ?? null);
 
         if ($rebuildLockRemaining > 0) {
@@ -1258,6 +1266,10 @@ class Module
 
         if (($record->status ?? '') === 'suspended') {
             return 'This VPS is suspended. Actions are unavailable until it is unsuspended.';
+        }
+
+        if (($record->status ?? '') === 'terminated') {
+            return 'This VPS has been terminated. No further actions are available.';
         }
 
         try {

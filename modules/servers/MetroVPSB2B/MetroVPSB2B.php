@@ -332,6 +332,7 @@ function MetroVPSB2B_ClientAreaHtml(int $serviceId, ?array $product, ?object $pr
     $modalId  = $modalPrefix . '-' . $serviceId;
     $hostname = $hostingData['hostname'] ?? '';
     $isSuspended = ($provisionRecord->status ?? '') === 'suspended';
+    $isTerminated = ($provisionRecord->status ?? '') === 'terminated';
 
     // Package figures: prefer the synced vps-details package block, fall
     // back to the (older) product snapshot.
@@ -361,13 +362,17 @@ function MetroVPSB2B_ClientAreaHtml(int $serviceId, ?array $product, ?object $pr
 
     $html .= '<div class="metrovps-head-badges">'
         . MetroVPSB2B_StatusBadge($provisionRecord->status ?? null)
-        . ($isSuspended ? '' : ' ' . MetroVPSB2B_PowerBadge($vpsData))
+        . (($isSuspended || $isTerminated) ? '' : ' ' . MetroVPSB2B_PowerBadge($vpsData))
         . '</div></div>';
 
     // --- Quick actions ---------------------------------------------------
     if ($isSuspended) {
         $html .= '<div class="metrovps-actionbar">'
             . '<span class="metrovps-suspended-note"><i class="fas fa-pause-circle"></i> Service suspended — actions are unavailable until this service is unsuspended.</span>'
+            . '</div>';
+    } elseif ($isTerminated) {
+        $html .= '<div class="metrovps-actionbar">'
+            . '<span class="metrovps-suspended-note"><i class="fas fa-ban"></i> Service terminated — no further actions are available.</span>'
             . '</div>';
     } else {
         $lockSeconds        = (new Module())->powerLockRemaining($provisionRecord->power_action_at ?? null);
@@ -425,7 +430,7 @@ function MetroVPSB2B_ClientAreaHtml(int $serviceId, ?array $product, ?object $pr
         $rows .= MetroVPSB2B_Row('SSH', '<code class="metrovps-code">ssh root@' . MetroVPSB2B_Escape($sshTarget) . '</code>');
     }
 
-    if ($rows !== '') {
+    if (!$isTerminated && $rows !== '') {
         $html .= MetroVPSB2B_Panel('Server Information', '<i class="fas fa-server metrovps-panel-icon"></i>', $rows);
     }
 
@@ -463,7 +468,7 @@ function MetroVPSB2B_ClientAreaHtml(int $serviceId, ?array $product, ?object $pr
     $html .= '</div>'; // .metrovps-dashboard
 
     // --- Reinstall modal ---------------------------------------------------
-    if (!$isSuspended) {
+    if (!$isSuspended && !$isTerminated) {
         $html .= MetroVPSB2B_ReinstallModal($serviceId, $modalId);
     }
 

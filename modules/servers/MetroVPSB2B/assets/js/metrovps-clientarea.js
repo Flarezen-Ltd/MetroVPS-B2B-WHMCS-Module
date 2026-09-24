@@ -423,15 +423,17 @@
         }
 
         var suspended = status === 'suspended';
+        var terminated = status === 'terminated';
+        var noActions = suspended || terminated;
 
-        // Suspended: hide the power-state badge (the lifecycle badge carries
-        // the Suspended label) and disable every action button.
+        // Suspended/terminated: hide the power-state badge (the lifecycle
+        // badge carries the lifecycle label) and disable every action button.
         document.querySelectorAll('[data-metrovps-state-badge]').forEach(function (el) {
             var badge = el.closest('.metrovps-badge') || el;
-            badge.style.display = suspended ? 'none' : '';
+            badge.style.display = noActions ? 'none' : '';
         });
 
-        if (suspended) {
+        if (noActions) {
             document.querySelectorAll('.metrovps-actionbar [data-metrovps-action]').forEach(function (btn) {
                 btn.disabled = true;
                 btn.classList.add('metrovps-btn--locked');
@@ -440,7 +442,7 @@
 
         var stateEntry = STATE_MAP[remoteState];
 
-        if (stateEntry && !suspended) {
+        if (stateEntry && !noActions) {
             document.querySelectorAll('[data-metrovps-state-badge]').forEach(function (el) {
                 setBadge(el, stateEntry, remoteState);
             });
