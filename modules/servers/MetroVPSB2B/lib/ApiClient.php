@@ -499,6 +499,23 @@ class ApiClient
     }
 
     /**
+     * Renew a VPS via the MetroVPS B2B API.
+     *
+     * @param int $serviceId   MetroVPS service ID
+     * @param int $b2bOrderId  MetroVPS B2B order ID
+     * @return array ['success' => bool, 'error' => string, 'data' => array|null]
+     */
+    public function renewVps(int $serviceId, int $b2bOrderId): array
+    {
+        $result = $this->request('POST', '/b2b/api/vps/renew', [
+            'service_id'   => $serviceId,
+            'b2b_order_id' => $b2bOrderId,
+        ]);
+
+        return $this->unwrap($result);
+    }
+
+    /**
      * Normalize a raw request() result into the shared API-result shape.
      *
      * @param array $result Raw result from request()

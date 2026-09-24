@@ -1032,6 +1032,118 @@ class Module
     }
 
     /**
+     * Notify MetroVPS that a service has been renewed and sync the returned
+     * billing state back into the local provision record.
+     *
+     * Fire-and-forget style notifier for the billing hooks: failures are
+     * reported through the return value and the module log, never thrown, so a
+     * broken upstream API can never disrupt a WHMCS service.
+     *
+     * @param int $serviceId WHMCS tblhosting.id
+     * @return array ['success' => bool, 'error' => string]
+     */
+    public function renewService(int $serviceId): array
+    {
+        $record = Database::getByServiceId($serviceId);
+
+        if (!$record || empty($record->metro_service_id) || empty($record->b2b_order_id)) {
+            return ['success' => false, 'error' => 'No provision record found for this service.'];
+        }
+
+        try {
+            $credentials = $this->getServerCredentialsFromDb();
+
+            if (!$credentials) {
+                return ['success' => false, 'error' => 'No active MetroVPS B2B server found.'];
+            }
+
+            $client = new ApiClient($credentials['base_url'], $credentials['api_key'], $credentials['api_secret']);
+            $result = $client->renewVps((int) $record->metro_service_id, (int) $record->b2b_order_id);
+
+            logModuleCall(
+                'MetroVPSB2B',
+                'renewService',
+                [
+                    'service_id'       => $serviceId,
+                    'metro_service_id' => (int) $record->metro_service_id,
+                    'b2b_order_id'     => (int) $record->b2b_order_id,
+                ],
+                $result,
+                $result['success'] ? 'success' : 'error'
+            );
+
+            if (!$result['success']) {
+                return ['success' => false, 'error' => $result['error'] ?: 'Unknown renew error'];
+            }
+
+            $this->applyRenewResult($serviceId, $result['data'] ?? []);
+
+            return ['success' => true, 'error' => ''];
+        } catch (\Throwable $e) {
+            logModuleCall('MetroVPSB2B', 'renewService:error', ['service_id' => $serviceId], $e->getMessage(), '');
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Persist the renew response (charged amount, remaining balance, status,
+     * next due date) onto the provision record.
+     *
+     * Uses a direct update so the existing provision_response snapshot is
+     * only patched, never overwritten with a partial payload.
+     *
+     * @param int   $serviceId
+     * @param array $data Renew response 'data' block (may be empty)
+     * @return void
+     */
+    protected function applyRenewResult(int $serviceId, array $data): void
+    {
+        $updates = [
+            'updated_at' => date('Y-m-d H:i:s'),
+        ];
+
+        if (array_key_exists('charged_amount', $data)) {
+            $updates['charged_amount'] = $data['charged_amount'];
+        }
+
+        if (array_key_exists('currency_code', $data)) {
+            $updates['currency_code'] = $data['currency_code'];
+        }
+
+        if (array_key_exists('balance_remaining', $data)) {
+            $updates['balance_remaining'] = $data['balance_remaining'];
+        }
+
+        if (!empty($data['service_status'])) {
+            $updates['status'] = $data['service_status'];
+        }
+
+        // next_due_date has no dedicated column; carry it on the snapshot.
+        $record   = Database::getByServiceId($serviceId);
+        $snapshot = [];
+
+        if ($record && !empty($record->provision_response)) {
+            $decoded = json_decode($record->provision_response, true);
+
+            if (is_array($decoded)) {
+                $snapshot = $decoded;
+            }
+        }
+
+        if (array_key_exists('next_due_date', $data)) {
+            $snapshot['next_due_date'] = $data['next_due_date'];
+        }
+
+        $updates['provision_response'] = json_encode($snapshot, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+        try {
+            DB::table(Database::TABLE)->where('service_id', $serviceId)->update($updates);
+        } catch (\Throwable $e) {
+            logModuleCall('MetroVPSB2B', 'applyRenewResult:error', ['service_id' => $serviceId], $e->getMessage(), '');
+        }
+    }
+
+    /**
      * Seconds left until the absolute rebuild lock expiry.
      *
      * @param string|null $lockedUntil 'Y-m-d H:i:s' absolute expiry or null
