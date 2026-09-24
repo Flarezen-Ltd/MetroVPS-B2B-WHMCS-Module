@@ -1,0 +1,18 @@
+# Track only the MetroVPS B2B module and its hooks from this WHMCS root.
+/*
+
+!.gitignore
+
+!/modules/
+/modules/*
+!/modules/servers/
+/modules/servers/*
+!/modules/servers/MetroVPSB2B/
+/modules/servers/MetroVPSB2B/*.zip
+
+!/includes/
+/includes/*
+!/includes/hooks/
+/includes/hooks/*
+!/includes/hooks/metrovpsb2b_cart.php
+!/includes/hooks/metrovpsb2b_billing.php

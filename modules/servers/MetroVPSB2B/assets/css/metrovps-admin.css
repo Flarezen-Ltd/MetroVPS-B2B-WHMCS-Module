@@ -1,0 +1,29 @@
+/**
+ * MetroVPS B2B — Admin Service Tab Styles
+ *
+ * Complements the Bootstrap-based markup rendered by
+ * Module::getAdminTabFields() for the WHMCS Blend admin theme.
+ */
+
+/* Provision status section */
+.metrovps-admin-fields .label {
+    font-size: 0.9em;
+    padding: 0.3em 0.6em;
+}
+
+.metrovps-admin-fields .text-muted {
+    font-size: 0.85em;
+}
+
+/* Spacing between field groups */
+.metrovps-admin-fields .row + .row {
+    margin-top: 4px;
+}
+
+/* Error alert compactness */
+.metrovps-admin-fields .alert {
+    margin-top: 8px;
+    margin-bottom: 0;
+    padding: 8px 12px;
+    font-size: 0.9em;
+}

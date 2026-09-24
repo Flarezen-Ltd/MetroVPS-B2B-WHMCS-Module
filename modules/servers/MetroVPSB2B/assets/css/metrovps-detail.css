@@ -1,0 +1,591 @@
+/**
+ * MetroVPS B2B — Client Area Styles
+ *
+ * Serves three surfaces:
+ *   - the order-form package card (assets/js/metrovps-package-detail.js)
+ *   - the client area Overview widget (includes/hooks/metrovpsb2b_cart.php)
+ *   - the Manage-tab VPS dashboard (MetroVPSB2B_ClientArea)
+ *
+ * Bump the ?v= query on the stylesheet tags when editing.
+ */
+
+/* ================================================================
+   Legacy order-form card (metrovps-package-detail.js)
+   ================================================================ */
+
+.metrovps-detail-card {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 12px;
+    text-align: left;
+}
+
+.metrovps-detail-header h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    color: #1e293b;
+    border-bottom: 2px solid #3b82f6;
+    padding-bottom: 8px;
+}
+
+.metrovps-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+}
+
+.metrovps-detail-item {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+
+.metrovps-detail-item.metrovps-detail-full {
+    grid-column: 1 / -1;
+}
+
+.metrovps-detail-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #64748b;
+    letter-spacing: .05em;
+    margin-bottom: 4px;
+}
+
+.metrovps-detail-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.metrovps-loading {
+    text-align: center;
+    color: #64748b;
+    padding: 16px;
+}
+
+.metrovps-error {
+    text-align: center;
+    color: #ef4444;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    padding: 12px;
+}
+
+/* ================================================================
+   Shared: badges, buttons, chips, action bar
+   ================================================================ */
+
+.metrovps-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    letter-spacing: .02em;
+    white-space: nowrap;
+}
+
+.metrovps-badge--active    { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+.metrovps-badge--processing{ background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+.metrovps-badge--installing{ background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+.metrovps-badge--offline   { background: #e2e8f0; color: #475569; border: 1px solid #cbd5e1; }
+.metrovps-badge--failed    { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.metrovps-badge--suspended { background: #fee2e2; color: #7f1d1d; border: 1px solid #fca5a5; }
+.metrovps-badge--unknown   { background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; }
+.metrovps-badge--power     { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+.metrovps-badge--stopped   { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+.metrovps-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: box-shadow .15s ease, transform .05s ease, background .15s ease;
+    white-space: nowrap;
+}
+
+.metrovps-btn:active { transform: translateY(1px); }
+.metrovps-btn:disabled { opacity: .55; cursor: not-allowed; }
+
+.metrovps-btn--primary   { background: #2563eb; color: #fff; }
+.metrovps-btn--primary:hover   { background: #1d4ed8; }
+.metrovps-btn--success   { background: #16a34a; color: #fff; }
+.metrovps-btn--success:hover   { background: #15803d; }
+.metrovps-btn--danger    { background: #dc2626; color: #fff; }
+.metrovps-btn--danger:hover    { background: #b91c1c; }
+.metrovps-btn--secondary { background: #fff; color: #334155; border-color: #cbd5e1; }
+.metrovps-btn--secondary:hover { background: #f1f5f9; }
+
+.metrovps-actionbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.metrovps-btn--locked {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.metrovps-lock-note {
+    font-size: 12px;
+    color: #b45309;
+    background: #fef3c7;
+    border: 1px solid #fde047;
+    border-radius: 999px;
+    padding: 3px 10px;
+    align-self: center;
+}
+
+.metrovps-suspended-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #7f1d1d;
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 6px;
+    padding: 9px 14px;
+}
+
+.metrovps-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 3px 6px 3px 10px;
+}
+
+.metrovps-chip-value {
+    font-family: Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    color: #1e293b;
+}
+
+.metrovps-ip .metrovps-chip-value { color: #1d4ed8; }
+
+.metrovps-copy {
+    border: none;
+    background: transparent;
+    color: #64748b;
+    padding: 3px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+}
+
+.metrovps-copy:hover { color: #2563eb; background: #e2e8f0; }
+
+.metrovps-password {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.metrovps-password-value {
+    font-family: Menlo, Consolas, monospace;
+    font-size: 14px;
+    letter-spacing: .2em;
+    color: #374151;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 4px 10px;
+    user-select: none;
+}
+
+.metrovps-password-visible {
+    letter-spacing: normal;
+    color: #b91c1c;
+    user-select: text;
+}
+
+/* ================================================================
+   Manage-tab dashboard
+   ================================================================ */
+
+.metrovps-dashboard {
+    text-align: left;
+    margin-top: 12px;
+}
+
+.metrovps-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    border-radius: 10px 10px 0 0;
+    padding: 16px 20px;
+    color: #f8fafc;
+}
+
+.metrovps-head-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.metrovps-os-icon--head { width: 44px; height: 44px; flex: 0 0 auto; }
+
+.metrovps-head-title {
+    font-size: 17px;
+    font-weight: 700;
+    word-break: break-all;
+}
+
+.metrovps-head-sub {
+    font-size: 12.5px;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+.metrovps-head-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.metrovps-head-badges .metrovps-badge--unknown,
+.metrovps-head-badges .metrovps-badge--stopped,
+.metrovps-head-badges .metrovps-badge--offline { background: rgba(255,255,255,.08); color: #e2e8f0; border-color: rgba(255,255,255,.18); }
+.metrovps-head-badges .metrovps-badge--active  { background: rgba(34,197,94,.18); color: #86efac; border-color: rgba(34,197,94,.4); }
+.metrovps-head-badges .metrovps-badge--power  { background: rgba(34,197,94,.18); color: #86efac; border-color: rgba(34,197,94,.4); }
+.metrovps-head-badges .metrovps-badge--processing { background: rgba(250,204,21,.16); color: #fde047; border-color: rgba(250,204,21,.4); }
+.metrovps-head-badges .metrovps-badge--installing { background: rgba(59,130,246,.2); color: #93c5fd; border-color: rgba(59,130,246,.4); }
+.metrovps-head-badges .metrovps-badge--failed,
+.metrovps-head-badges .metrovps-badge--suspended { background: rgba(239,68,68,.16); color: #fca5a5; border-color: rgba(239,68,68,.4); }
+
+.metrovps-dashboard > .metrovps-actionbar {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-top: none;
+    padding: 12px 20px;
+}
+
+.metrovps-panels {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 16px;
+}
+
+.metrovps-panel--full {
+    grid-column: 1 / -1;
+}
+
+.metrovps-panel {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+}
+
+.metrovps-panel-head {
+    background: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 10px 14px;
+}
+
+.metrovps-panel-head h4 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.metrovps-panel-icon { color: #2563eb; font-size: 14px; width: 16px; text-align: center; }
+
+.metrovps-panel-body { padding: 6px 14px; }
+
+.metrovps-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+.metrovps-row:last-child { border-bottom: none; }
+
+.metrovps-row-label {
+    font-size: 12.5px;
+    color: #64748b;
+    flex: 0 0 auto;
+}
+
+.metrovps-row-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.metrovps-value { font-size: 13.5px; font-weight: 600; color: #1e293b; }
+.metrovps-code {
+    font-family: Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 2px 7px;
+    color: #475569;
+    word-break: break-all;
+}
+
+.metrovps-os-icon--row { width: 26px; height: 26px; }
+
+.metrovps-os-name { font-weight: 600; color: #1e293b; font-size: 13.5px; }
+
+.metrovps-empty {
+    padding: 12px 0;
+    color: #94a3b8;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* ================================================================
+   Overview widget
+   ================================================================ */
+
+.metrovps-overview {
+    text-align: left;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 14px 0;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+}
+
+.metrovps-overview-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #f8fafc;
+    padding: 14px 18px;
+}
+
+.metrovps-os-icon--overview { width: 34px; height: 34px; flex: 0 0 auto; }
+
+.metrovps-overview-title {
+    font-size: 15.5px;
+    font-weight: 700;
+    word-break: break-all;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.metrovps-overview-sub { color: #94a3b8; font-weight: 500; font-size: 12.5px; }
+
+.metrovps-overview-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.metrovps-overview-badges .metrovps-badge--unknown,
+.metrovps-overview-badges .metrovps-badge--stopped,
+.metrovps-overview-badges .metrovps-badge--offline { background: rgba(255,255,255,.08); color: #e2e8f0; border-color: rgba(255,255,255,.18); }
+.metrovps-overview-badges .metrovps-badge--active,
+.metrovps-overview-badges .metrovps-badge--power { background: rgba(34,197,94,.18); color: #86efac; border-color: rgba(34,197,94,.4); }
+.metrovps-overview-badges .metrovps-badge--processing { background: rgba(250,204,21,.16); color: #fde047; border-color: rgba(250,204,21,.4); }
+.metrovps-overview-badges .metrovps-badge--installing { background: rgba(59,130,246,.2); color: #93c5fd; border-color: rgba(59,130,246,.4); }
+.metrovps-overview-badges .metrovps-badge--failed,
+.metrovps-overview-badges .metrovps-badge--suspended { background: rgba(239,68,68,.16); color: #fca5a5; border-color: rgba(239,68,68,.4); }
+
+.metrovps-overview-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    padding: 14px 18px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.metrovps-fact { display: flex; flex-direction: column; gap: 3px; }
+
+.metrovps-fact-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #64748b;
+}
+
+.metrovps-fact-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    color: #1e293b;
+    flex-wrap: wrap;
+}
+
+.metrovps-kernel {
+    font-family: Menlo, Consolas, monospace;
+    font-size: 11.5px;
+    color: #64748b;
+}
+
+.metrovps-overview > .metrovps-actionbar { padding: 12px 18px; }
+
+/* ================================================================
+   Reinstall modal + toasts
+   ================================================================ */
+
+.metrovps-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, .55);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.metrovps-modal-box {
+    background: #fff;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, .35);
+    overflow: hidden;
+}
+
+.metrovps-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: #0f172a;
+    color: #f8fafc;
+}
+
+.metrovps-modal-head h4 {
+    margin: 0;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.metrovps-modal-close {
+    border: none;
+    background: transparent;
+    color: #94a3b8;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.metrovps-modal-close:hover { color: #fff; }
+
+.metrovps-modal-body { padding: 16px 18px; }
+
+.metrovps-modal-body p { margin: 0 0 12px; font-size: 13.5px; color: #475569; }
+
+.metrovps-select {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 9px 10px;
+    font-size: 14px;
+    background: #fff;
+    color: #1e293b;
+}
+
+.metrovps-modal-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 14px 18px;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+#metrovps-toasts {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 340px;
+}
+
+.metrovps-toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #1e293b;
+    color: #f8fafc;
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-size: 13.5px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, .25);
+    animation: metrovps-toast-in .2s ease;
+}
+
+.metrovps-toast--success { background: #15803d; }
+.metrovps-toast--error   { background: #b91c1c; }
+.metrovps-toast--info    { background: #1e293b; }
+
+.metrovps-toast-close {
+    border: none;
+    background: transparent;
+    color: inherit;
+    opacity: .7;
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    margin-left: auto;
+}
+
+.metrovps-toast-close:hover { opacity: 1; }
+
+@keyframes metrovps-toast-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 575px) {
+    .metrovps-head, .metrovps-overview-head { flex-direction: column; align-items: flex-start; }
+    .metrovps-head-badges, .metrovps-overview-badges { justify-content: flex-start; }
+    .metrovps-panels { grid-template-columns: 1fr; }
+    .metrovps-actionbar { display: grid; grid-template-columns: 1fr 1fr; }
+    .metrovps-actionbar .metrovps-btn { justify-content: center; }
+}

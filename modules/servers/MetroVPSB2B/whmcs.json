@@ -1,0 +1,22 @@
+{
+  "schema": "1.0",
+  "type": "whmcs-servers",
+  "name": "metrovpsb2b",
+  "license": "proprietary",
+  "version": "1.0.0",
+  "category": "vpscloud",
+  "description": {
+    "name": "MetroVPS B2B",
+    "tagline": "Automate VPS reseller provisioning via the MetroVPS B2B API.",
+    "long": "This module connects WHMCS to the MetroVPS reseller platform, allowing you to sell and automatically provision VPS services. Configure your MetroVPS API key and whitelist your WHMCS server IP to get started."
+  },
+  "support": {
+    "docs_url": "https://metrovps.com"
+  },
+  "authors": [
+    {
+      "name": "MetroVPS B2B Integration",
+      "homepage": "https://metrovps.com"
+    }
+  ]
+}
